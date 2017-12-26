@@ -1,19 +1,23 @@
 base = 10e9
-first_num = [123, 456, 789]
-second_num = [123, 456, 789]
+first_num = [9, 9, 9, 9, 9]
+second_num = [9, 9, 9, 9, 9]
 
 
-def add(left, right):
-    carry = 0
-    for i in range(max(len(left), len(right)) or carry):
-        if i == len(left):
-            left.append(0)
-        left[i] += carry + (right[i] if i < len(left) else 0)
-        carry = left[i] >= base
-        if carry:
-            left[i] -= base
+def multiplication(a, b):
+    length = len(a) + len(b) + 1
+    c = [0 for _ in range(length+1)]
+
+    for ix in range(len(a)):
+        for jx in range(len(b)):
+            c[ix + jx] += a[ix] * b[jx]
+
+    for ix in range(length):
+        c[ix + 1] += c[ix] // 10
+        c[ix] %= 10
+
+    while c[length - 1] == 0:
+        length -= 1
+    return c
 
 
-add(first_num, second_num);
-
-print(first_num)
+print("".join(map(str, reversed(multiplication(first_num, second_num)))))
