@@ -44,3 +44,4 @@ for i in range(0, 10 ** 8, 1000):
 while 0 in results:
     results.remove(0)
 print(results)
+print("done")
