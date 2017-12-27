@@ -1,26 +1,11 @@
 import time
-
-
-class Timer(object):
-    def __init__(self, verbose=False):
-        self.verbose = verbose
-
-    def __enter__(self):
-        self.start = time.time()
-        return self
-
-    def __exit__(self, *args):
-        self.end = time.time()
-        self.secs = self.end - self.start
-        self.msecs = self.secs * 1000  # millisecs
-        if self.verbose:
-            print('elapsed time: %f ms' % self.msecs)
+import matplotlib.pyplot as plt
+import timeit
 
 
 def multiplication(a, b):
     length = len(a) + len(b) + 1
     c = [0 for _ in range(length + 1)]
-
     for ix in range(len(a)):
         for jx in range(len(b)):
             c[ix + jx] += a[ix] * b[jx]
@@ -31,18 +16,29 @@ def multiplication(a, b):
     return c
 
 
-results = []
-for i in range(0, 10 ** 8, 1000):
-    a = [int(x) for x in str(i)]
-    a.reverse()
-    b = a.copy()
+def multiplication_for_test(a):
+    a = [int(x) for x in reversed(str(a))]
+    length = len(a) * 2 + 1
+    c = [0 for _ in range(length + 1)]
 
-    with Timer() as t:
-        multiplication(a, b)
-    results.append(t.msecs)
-    print(a, t.msecs)
-while 0 in results:
-    results.remove(0)
-print(results)
-print("done")
-print("done")
+    for ix in range(len(a)):
+        for jx in range(len(a)):
+            c[ix + jx] += a[ix] * a[jx]
+
+    for ix in range(length):
+        c[ix + 1] += c[ix] // 10
+        c[ix] %= 10
+    return c
+
+results = []
+
+for i in range(1, 500):
+
+    start = time.clock()
+    multiplication_for_test(int("9"*i))
+    end = time.clock()
+    results.append(end - start)
+
+plt.plot([x for x in range(1, 500)], results)
+plt.grid(True)
+plt.show()
